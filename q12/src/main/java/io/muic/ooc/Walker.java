@@ -1,7 +1,6 @@
 package io.muic.ooc;
 
 import org.apache.commons.io.DirectoryWalker;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
