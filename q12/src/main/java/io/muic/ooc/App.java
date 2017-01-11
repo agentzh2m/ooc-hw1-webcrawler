@@ -42,6 +42,7 @@ public class App
                 for (String elt: walker.getUniqueExt()){
                     System.out.printf("%s ", elt);
                 }
+                System.out.println();
             }
             if (line.hasOption("num-exts")){
                 System.out.printf("Total number of files with extension %s: %d \n",

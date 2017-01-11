@@ -42,12 +42,7 @@ public class Walker extends DirectoryWalker {
     public int getTotalUniqueExt(){return uniqueExtCounter.keySet().size();}
     public Set<String> getUniqueExt() {return uniqueExtCounter.keySet();}
     public int getTotalNumFileNumExt(String ext){
-        int extCounter = 0;
-        for (Object e: results){
-            File elt = (File) e;
-            if(FilenameUtils.getExtension(elt.getName()).equals(ext)){extCounter += 1;}
-        }
-        return extCounter;
+        return uniqueExtCounter.getOrDefault(ext, 0);
     }
 
 
