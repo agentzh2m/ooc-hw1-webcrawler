@@ -1,4 +1,4 @@
-package io.muic.ooc;
+package io.muic.ooc.downloader;
 
 import java.io.BufferedReader;
 import java.io.FileOutputStream;

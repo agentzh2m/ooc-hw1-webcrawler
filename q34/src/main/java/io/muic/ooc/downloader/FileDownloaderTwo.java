@@ -1,4 +1,4 @@
-package io.muic.ooc;
+package io.muic.ooc.downloader;
 
 import org.apache.commons.io.FileUtils;
 
