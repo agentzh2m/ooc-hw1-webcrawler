@@ -14,27 +14,34 @@ public class CrawlerMain {
     }
     public void startCrawling(){
         CrawlConnection crawlConnection = new CrawlConnection();
-        String initSt = crawlConnection.downloadHTMLFile(urlStart, outPath+"/index.html");
         Deque<String> Q = new ArrayDeque<>();
         Set<String> visited = new HashSet<>();
-        Q.push(urlStart+"/"+"index.html");
+        Q.push("index.html");
         while (!Q.isEmpty()){
             String curNode = Q.pop();
+            String fullPathURL = urlStart+curNode;
+            String fullPathLocal = outPath+curNode;
+            try {
+                Thread.sleep(750);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.printf("cur node is %s stack size is %d\n",fullPathURL, Q.size());
             if(CrawlerUtils.htmlChecker(curNode) && !visited.contains(curNode)){
-                String buff = crawlConnection.downloadHTMLFile(urlStart+"/"+curNode, outPath+"/"+curNode);
-                System.out.printf("from: %s \n to: %s", urlStart+"/"+curNode, outPath+"/"+curNode);
                 visited.add(curNode);
+                String buff = crawlConnection.downloadHTMLFile(fullPathURL, fullPathLocal);
+//                System.out.printf("from: %s \n to: %s \n", fullPathURL, fullPathLocal);
                 Set<String> links = CrawlerUtils.getLinkFromURL(buff);
                 for(String link: links){
                     if(CrawlerUtils.pathChecker(link)){
-                        if(CrawlerUtils.relChecker(link))
-                            Q.push(CrawlerUtils.resolvePath(link, curNode));
-                        else
-                            Q.push(link);
+                        String procPath = CrawlerUtils.processPath(link, curNode);
+                        if(!visited.contains(procPath))
+                            Q.push(procPath);
                     }
                 }
             }else{
-                crawlConnection.downloadBinaryFile(urlStart+"/"+curNode, outPath+"/"+curNode);
+                crawlConnection.downloadBinaryFile(fullPathURL, fullPathLocal);
+                System.out.printf("save binary %s at %s", CrawlerUtils.fileFromPath(curNode), curNode);
             }
         }
     }

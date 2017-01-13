@@ -24,7 +24,7 @@ public class CrawlerUtils {
         }
     }
     public static boolean pathChecker(String url){
-        if(url.length() > 0 && !url.startsWith("http://") && !url.startsWith("#")){
+        if(url.length() > 0 && !url.contains("http") && !url.startsWith("#")){
             String[] strTok = url.split("#");
             if(strTok.length > 1){
                 return true;
@@ -50,6 +50,14 @@ public class CrawlerUtils {
         return path.contains("..");
     }
 
+    public static String processHashtag(String path){
+        if(path.contains("#")){
+            return path.substring(0, path.indexOf('#'));
+        }else{
+            return path;
+        }
+    }
+
     //resolve path to the original absolute path
     public static String resolvePath(String path, String curPath){
         String[] pathTok = path.split("/");
@@ -67,5 +75,17 @@ public class CrawlerUtils {
                 resPath+= pathTok[i];
             }
         return resPath;
+    }
+
+    public static String processPath(String path, String curPath){
+        String finalString = path;
+        if(relChecker(path)) finalString = resolvePath(path, curPath);
+        else {
+            if(curPath.lastIndexOf("/") > 0)
+                finalString = curPath.substring(0, curPath.lastIndexOf("/"))+"/"+path;
+        }
+        finalString = processHashtag(finalString);
+        return finalString;
+
     }
 }
