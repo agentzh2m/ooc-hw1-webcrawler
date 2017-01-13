@@ -10,18 +10,21 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class CrawlerUtils {
-    public static Set<String> getLinkFromURL(String url) throws IOException {
-        Document doc = Jsoup.connect(url).validateTLSCertificates(false).get();
+    public static Set<String> getLinkFromURL(String content) throws IOException {
+        Document doc = Jsoup.parse(content);
         Elements links = doc.getElementsByTag("a");
         Set<String> allURL = new HashSet<String>();
         for(Element link: links){allURL.add(link.attr("href"));}
         return allURL;
     }
-    public static String cleanURL(String url){
+    public static boolean cleanURL(String url){
         if(url.length() > 0 && !url.startsWith("http://") && !url.startsWith("#")){
             String[] strTok = url.split("#");
-            return strTok[0];
+            if(strTok.length > 1){
+                return true;
+            }
+            return true;
         }
-        return "";
+        return false;
     }
 }
