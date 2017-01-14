@@ -24,7 +24,8 @@ public class CrawlerUtils {
         }
     }
     public static boolean pathChecker(String url, String startURL){
-        if(url.length() > 0 && url.contains(startURL) && !url.startsWith("#") && !url.contains("javascript:show")){
+        if(url.length() > 0 && url.contains(startURL) && !url.startsWith("#") && !url.contains("javascript:show")
+                 && !fileFromPath(url).contains("http")){
             String[] strTok = url.split("#");
             if(strTok.length > 1){
                 return true;
@@ -38,7 +39,7 @@ public class CrawlerUtils {
         String[] strTok = path.split("/");
         String file = strTok[strTok.length-1];
         String[] fileTok = file.split("#");
-        return fileTok[fileTok.length-1];
+        return fileTok[0];
     }
 
     public static boolean htmlChecker(String path){
@@ -52,25 +53,6 @@ public class CrawlerUtils {
         if(path.contains("?")) finalPath = path.substring(0, path.indexOf('?'));
         return finalPath;
 
-    }
-
-    //resolve path to the original absolute path
-    public static String resolvePath(String path, String curPath){
-        String[] pathTok = path.split("/");
-        String[] curPathTok = curPath.split("/");
-        int backCount = 0;
-        for(String s: pathTok)
-            if(s.equals("..")) backCount++;
-        String resPath = "";
-        for(int i = 0; i < curPathTok.length-backCount-1; i++)
-            resPath+=curPathTok[i]+"/";
-        for(int i = backCount; i < pathTok.length; i++)
-            if(i != pathTok.length-1){
-                resPath+= pathTok[i]+"/";
-            }else{
-                resPath+= pathTok[i];
-            }
-        return resPath;
     }
 
 }
