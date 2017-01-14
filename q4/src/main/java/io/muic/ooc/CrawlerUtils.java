@@ -11,9 +11,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class CrawlerUtils {
-    public static Set<String> getLinkFromURL(String content){
+    public static Set<String> getLinkFromURL(String content, String baseURI){
         try{
-            Document doc = Jsoup.parse(content);
+            Document doc = Jsoup.parse(content, baseURI);
             Elements links = doc.getElementsByTag("a");
             Set<String> allURL = new HashSet<String>();
             for(Element link: links){allURL.add(link.attr("abs:href"));}
@@ -23,8 +23,8 @@ public class CrawlerUtils {
             return new HashSet<>();
         }
     }
-    public static boolean pathChecker(String url){
-        if(url.length() > 0 && !url.contains("http") && !url.startsWith("#") && !url.contains("javascript:show")){
+    public static boolean pathChecker(String url, String startURL){
+        if(url.length() > 0 && url.contains(startURL) && !url.startsWith("#") && !url.contains("javascript:show")){
             String[] strTok = url.split("#");
             if(strTok.length > 1){
                 return true;
@@ -46,16 +46,12 @@ public class CrawlerUtils {
         return FilenameUtils.getExtension(file).equals("html");
     }
 
-    public static boolean relChecker(String path){
-        return path.contains("..");
-    }
+    public static String cleanURL(String path){
+        String finalPath = path;
+        if(path.contains("#")) finalPath =  path.substring(0, path.indexOf('#'));
+        if(path.contains("?")) finalPath = path.substring(0, path.indexOf('?'));
+        return finalPath;
 
-    public static String processHashtag(String path){
-        if(path.contains("#")){
-            return path.substring(0, path.indexOf('#'));
-        }else{
-            return path;
-        }
     }
 
     //resolve path to the original absolute path
@@ -77,17 +73,4 @@ public class CrawlerUtils {
         return resPath;
     }
 
-    public static String processPath(String path, String curPath){
-        String finalString = path;
-        if(relChecker(path)) {
-            finalString = resolvePath(path, curPath);
-        }
-        else {
-            if(curPath.lastIndexOf("/") > 0)
-                finalString = curPath.substring(0, curPath.lastIndexOf("/"))+"/"+path;
-        }
-        finalString = processHashtag(finalString);
-        return finalString;
-
-    }
 }

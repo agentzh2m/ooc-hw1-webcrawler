@@ -42,7 +42,7 @@ public class CrawlConnection {
                 out = new FileOutputStream(f);
                 out.write(IOUtils.toByteArray(response.getEntity().getContent()));
                 out.close();
-                System.out.println("Successfully download " + url);
+//                System.out.println("Successfully download " + url);
                 return true;
             }else{
                 System.out.printf("file %s fail to download\n", url);
