@@ -7,12 +7,10 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.omg.CORBA.TIMEOUT;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 public class CrawlConnection {
     private CloseableHttpClient client;
@@ -24,8 +22,8 @@ public class CrawlConnection {
                 .setConnectionRequestTimeout(TIME_OUT*1000)
                 .build();
         PoolingHttpClientConnectionManager oConnectionMgr = new PoolingHttpClientConnectionManager();
-        oConnectionMgr.setMaxTotal(1000);
-        oConnectionMgr.setDefaultMaxPerRoute(100);
+        oConnectionMgr.setMaxTotal(20000);
+        oConnectionMgr.setDefaultMaxPerRoute(2000);
         client = HttpClientBuilder
                 .create()
                 .setDefaultRequestConfig(config)
@@ -47,7 +45,7 @@ public class CrawlConnection {
                 System.out.println("Successfully download " + url);
                 return true;
             }else{
-                System.out.printf("file %s fail to download", url);
+                System.out.printf("file %s fail to download\n", url);
             }
             return false;
         } catch (IOException e) {
@@ -74,7 +72,7 @@ public class CrawlConnection {
                 byte[] buff = IOUtils.toByteArray(response.getEntity().getContent());
                 out.write(buff);
                 out.close();
-                System.out.println("Successfully download " + url);
+//                System.out.println("Successfully download " + url);
                 return new String(buff);
             }else{
                 System.out.printf("file %s fail to download\n", url);

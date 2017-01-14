@@ -16,7 +16,7 @@ public class CrawlerUtils {
             Document doc = Jsoup.parse(content);
             Elements links = doc.getElementsByTag("a");
             Set<String> allURL = new HashSet<String>();
-            for(Element link: links){allURL.add(link.attr("href"));}
+            for(Element link: links){allURL.add(link.attr("abs:href"));}
             return allURL;
         }catch (Exception ex){
             ex.printStackTrace();
@@ -24,7 +24,7 @@ public class CrawlerUtils {
         }
     }
     public static boolean pathChecker(String url){
-        if(url.length() > 0 && !url.contains("http") && !url.startsWith("#")){
+        if(url.length() > 0 && !url.contains("http") && !url.startsWith("#") && !url.contains("javascript:show")){
             String[] strTok = url.split("#");
             if(strTok.length > 1){
                 return true;
@@ -79,7 +79,9 @@ public class CrawlerUtils {
 
     public static String processPath(String path, String curPath){
         String finalString = path;
-        if(relChecker(path)) finalString = resolvePath(path, curPath);
+        if(relChecker(path)) {
+            finalString = resolvePath(path, curPath);
+        }
         else {
             if(curPath.lastIndexOf("/") > 0)
                 finalString = curPath.substring(0, curPath.lastIndexOf("/"))+"/"+path;
