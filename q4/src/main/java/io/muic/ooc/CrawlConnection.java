@@ -11,6 +11,7 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class CrawlConnection {
     private CloseableHttpClient client;
@@ -23,7 +24,7 @@ public class CrawlConnection {
                 .build();
         PoolingHttpClientConnectionManager oConnectionMgr = new PoolingHttpClientConnectionManager();
         oConnectionMgr.setMaxTotal(20000);
-        oConnectionMgr.setDefaultMaxPerRoute(2000);
+        oConnectionMgr.setDefaultMaxPerRoute(100);
         client = HttpClientBuilder
                 .create()
                 .setDefaultRequestConfig(config)
@@ -40,8 +41,10 @@ public class CrawlConnection {
                 File f = new File(outPath);
                 handlePath(outPath);
                 out = new FileOutputStream(f);
-                out.write(IOUtils.toByteArray(response.getEntity().getContent()));
+                InputStream in = response.getEntity().getContent();
+                out.write(IOUtils.toByteArray(in));
                 out.close();
+                in.close();
 //                System.out.println("Successfully download " + url);
                 return true;
             }else{
@@ -69,7 +72,9 @@ public class CrawlConnection {
                 File f = new File(outPath);
                 handlePath(outPath);
                 out = new FileOutputStream(f);
+                InputStream in = response.getEntity().getContent();
                 byte[] buff = IOUtils.toByteArray(response.getEntity().getContent());
+                in.close();
                 out.write(buff);
                 out.close();
 //                System.out.println("Successfully download " + url);

@@ -19,12 +19,10 @@ public class CrawlerMain {
         Set<String> visited = new HashSet<>();
         Q.push(urlStart+"/index.html");
         while (!Q.isEmpty()){
-            String curNode = Q.pop(); cc++;
-            System.out.println("total file downloaded: " + cc);
-            String fullPathURL = curNode;
-            String fullPathLocal = outPath +"/"+curNode.substring(urlStart.length()+1, curNode.length());
-//            System.out.printf("cur node is %s stack size is %d\n",fullPathURL, Q.size());
-            if(CrawlerUtils.htmlChecker(curNode)){
+            String fullPathURL = Q.pop(); cc++;
+            String fullPathLocal = outPath +"/"+fullPathURL.substring(urlStart.length()+1, fullPathURL.length());
+            System.out.printf("%s, sSize: %d, cc: %d \r",fullPathURL, Q.size(), cc);
+            if(CrawlerUtils.htmlChecker(fullPathURL)){
                 String buff = crawlConnection.downloadHTMLFile(fullPathURL, fullPathLocal);
 //                System.out.printf("from: %s \n to: %s \n", fullPathURL, fullPathLocal);
                 Set<String> links = CrawlerUtils.getLinkFromURL(buff, fullPathURL);
@@ -39,7 +37,7 @@ public class CrawlerMain {
                 }
             }else{
                 crawlConnection.downloadBinaryFile(fullPathURL, fullPathLocal); cc++;
-                System.out.println("Total file downloaded: " + cc);
+                System.out.printf("%s, sSize: %d, cc: %d \r",fullPathURL, Q.size(), cc);
 //                System.out.printf("save binary %s at %s", CrawlerUtils.fileFromPath(curNode), curNode);
             }
         }
