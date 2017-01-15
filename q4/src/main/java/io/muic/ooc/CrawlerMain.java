@@ -27,12 +27,11 @@ public class CrawlerMain {
 //                System.out.printf("from: %s \n to: %s \n", fullPathURL, fullPathLocal);
                 Set<String> links = CrawlerUtils.getLinkFromURL(buff, fullPathURL);
                 for(String link: links){
-                    if(CrawlerUtils.pathChecker(link, urlStart)){
-                        String procPath = CrawlerUtils.cleanURL(link);
-                        if(!visited.contains(procPath)) {
-                            Q.push(procPath);
-                            visited.add(procPath);
-                        }
+                    String procPath = CrawlerUtils.cleanURL(link);
+                    if(CrawlerUtils.pathChecker(procPath, urlStart) &&
+                            procPath.length() > 0 && !visited.contains(procPath)){
+                        Q.push(procPath);
+                        visited.add(procPath);
                     }
                 }
             }else{

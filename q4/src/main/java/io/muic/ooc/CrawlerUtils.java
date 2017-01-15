@@ -15,8 +15,12 @@ public class CrawlerUtils {
         try{
             Document doc = Jsoup.parse(content, baseURI);
             Elements links = doc.getElementsByTag("a");
-            Set<String> allURL = new HashSet<String>();
+            Set<String> allURL = new HashSet<>();
             for(Element link: links){allURL.add(link.attr("abs:href"));}
+            links = doc.getElementsByTag("img");
+            for(Element link: links) allURL.add(link.attr("abs:src"));
+            links = doc.getElementsByTag("link");
+            for(Element link: links) allURL.add(link.attr("abs:href"));
             return allURL;
         }catch (Exception ex){
             ex.printStackTrace();
@@ -38,8 +42,7 @@ public class CrawlerUtils {
     public static String fileFromPath(String path){
         String[] strTok = path.split("/");
         String file = strTok[strTok.length-1];
-        String[] fileTok = file.split("#");
-        return fileTok[0];
+        return file;
     }
 
     public static boolean htmlChecker(String path){
@@ -48,10 +51,18 @@ public class CrawlerUtils {
     }
 
     public static String cleanURL(String path){
-        String finalPath = path;
-        if(path.contains("#")) finalPath =  path.substring(0, path.indexOf('#'));
-        if(path.contains("?")) finalPath = path.substring(0, path.indexOf('?'));
-        return finalPath;
+        if(path.length() > 0){
+            String finalPath = path;
+            if(path.contains("#")) finalPath =  path.substring(0, path.indexOf('#'));
+            if(path.contains("?")) finalPath = path.substring(0, path.indexOf('?'));
+            if(finalPath.charAt(finalPath.length()-1) == '/'){
+                return "";
+            }else{
+                return finalPath;
+            }
+        }else{
+            return "";
+        }
 
     }
 
