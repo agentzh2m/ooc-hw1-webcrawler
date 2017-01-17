@@ -16,6 +16,7 @@ import java.io.InputStream;
 public class CrawlConnection {
     private CloseableHttpClient client;
     private final int TIME_OUT = 10;
+    private long wordCount = 0;
     public CrawlConnection(){
         RequestConfig config = RequestConfig.custom()
                 .setSocketTimeout(TIME_OUT*1000)
@@ -77,8 +78,10 @@ public class CrawlConnection {
                 in.close();
                 out.write(buff);
                 out.close();
+                String htOut = new String(buff);
+                wordCount += CrawlerUtils.getWordCount(htOut);
 //                System.out.println("Successfully download " + url);
-                return new String(buff);
+                return htOut;
             }else{
                 System.out.printf("file %s fail to download\n", url);
                 return "";
@@ -105,5 +108,7 @@ public class CrawlConnection {
             if(!fileDir.exists()) fileDir.mkdirs();
         }
     }
+
+    public long getWC(){return wordCount;}
 
 }

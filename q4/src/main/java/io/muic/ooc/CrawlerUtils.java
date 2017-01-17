@@ -6,6 +6,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import javax.print.Doc;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -26,6 +27,11 @@ public class CrawlerUtils {
             ex.printStackTrace();
             return new HashSet<>();
         }
+    }
+
+    public static int getWordCount(String content){
+        Document doc = Jsoup.parse(content);
+        return doc.text().split("\\w+").length;
     }
     public static boolean pathChecker(String url, String startURL){
         if(url.length() > 0 && url.contains(startURL) && !url.startsWith("#") && !url.contains("javascript:show")
