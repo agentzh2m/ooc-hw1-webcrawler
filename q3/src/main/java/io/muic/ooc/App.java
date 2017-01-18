@@ -2,6 +2,11 @@ package io.muic.ooc;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -13,7 +18,7 @@ public class App
 {
     public static void main( String[] args )
     {
-        final String SRC_URL = "http://10.27.8.20:9327/primes11.txt";
+        final String SRC_URL = "http://www.oracle.com/technetwork/java/javase/documentation/jdk8-doc-downloads-2133158.html";
         System.out.println(DownloderOne(SRC_URL));
         System.out.println(DownloaderTwo(SRC_URL));
         System.out.println(DownloaderThree(SRC_URL));
@@ -76,26 +81,28 @@ public class App
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+        HttpClient client = HttpClientBuilder.create().build();
+        HttpGet request = new HttpGet(url);
         String[] urlTok = myURL.getPath().split("/");
-        InputStream in = null;
         FileOutputStream out = null;
         try{
-            in = myURL.openStream();
-            byte[] data = IOUtils.toByteArray(in);
-            IOUtils.closeQuietly(in);
-            out = new FileOutputStream(new File(urlTok[urlTok.length-1]+"_fdThree"));
-            IOUtils.write(data, out);
-            IOUtils.closeQuietly(out);
-            return true;
+            HttpResponse response = client.execute(request);
+            if(response.getStatusLine().getStatusCode() == 200){
+                out = new FileOutputStream(new File(urlTok[urlTok.length-1]+"_fdThree"));
+                response.getEntity().writeTo(out);
+                request.releaseConnection();
+                IOUtils.closeQuietly(out);
+                return true;
+            }else {
+                return false;
+            }
         }catch (IOException ix){
             ix.printStackTrace();
             return false;
         }finally {
-            if (in != null) IOUtils.closeQuietly(in);
             if (out != null) IOUtils.closeQuietly(out);
         }
     }
-
 
 
 }

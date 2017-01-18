@@ -37,7 +37,6 @@ public class CrawlConnection {
         FileOutputStream out = null;
         try {
             HttpResponse response = client.execute(request);
-//            System.out.println("status code is " + response.getStatusLine().getStatusCode());
             if(response.getStatusLine().getStatusCode() == 200){
                 File f = new File(outPath);
                 handlePath(outPath);

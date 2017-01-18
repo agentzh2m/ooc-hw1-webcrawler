@@ -8,6 +8,8 @@ import org.jsoup.select.Elements;
 
 import javax.print.Doc;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,6 +36,7 @@ public class CrawlerUtils {
         return doc.text().split("\\w+").length;
     }
     public static boolean pathChecker(String url, String startURL){
+
         if(url.length() > 0 && url.contains(startURL) && !url.startsWith("#") && !url.contains("javascript:show")
                  && !fileFromPath(url).contains("http")){
             String[] strTok = url.split("#");
